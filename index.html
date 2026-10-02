@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Banking Dashboard</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        /* Main Layout Card */
+        .app-container { background: #ffffff; padding: 40px; width: 100%; max-width: 450px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); border-top: 4px solid #003366; text-align: center; }
+        
+        /* Top Shared FTC Badge */
+        .ftc-badge { background-color: #e6f0fa; color: #003366; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; padding: 6px 16px; border-radius: 20px; border: 1px solid #b3d1ff; display: inline-block; margin-bottom: 24px; }
+        
+        /* Login Form Styles */
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; margin-bottom: 6px; color: #333333; font-size: 14px; font-weight: bold; }
+        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        input:focus { border-color: #003366; outline: none; }
+        .login-btn { width: 100%; padding: 12px; background-color: #003366; border: none; color: white; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        .login-btn:hover { background-color: #002244; }
+        
+        /* Messages */
+        .message-box { padding: 10px; border-radius: 4px; font-size: 14px; margin-bottom: 15px; display: none; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* Dashboard Styles (Hidden by default) */
+        #dashboard { display: none; text-align: left; }
+        .account-header { border-bottom: 2px solid #f4f6f9; padding-bottom: 15px; margin-bottom: 20px; text-align: center; }
+        .meta-label { font-size: 12px; color: #666; text-transform: uppercase; font-weight: bold; margin-top: 10px; display: block; }
+        .meta-value { font-size: 18px; color: #003366; font-weight: bold; margin-bottom: 10px; }
+        
+        /* Transaction Box Setup */
+        .transaction-section { margin-top: 25px; margin-bottom: 25px; }
+        .transaction-section h3 { font-size: 15px; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 12px; }
+        .transaction-item { background: #f8f9fa; padding: 12px 15px; border-radius: 6px; border-left: 4px solid #28a745; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .tx-details { font-size: 14px; color: #333; font-weight: 500; }
+        .tx-type { font-size: 12px; color: #666; display: block; margin-top: 2px; }
+        .tx-amount { font-weight: bold; color: #28a745; font-size: 15px; }
+
+        /* Blocked Alert Banner */
+        .blocked-notice { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 15px; border-radius: 6px; font-size: 13px; font-weight: bold; text-align: center; line-height: 1.4; border-left: 4px solid #ffc107; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Top Middle Shared Badge -->
+    <span class="ftc-badge">🛡️ FTC Secured Account</span>
+
+    <!-- VIEW 1: LOGIN BOX -->
+    <div id="loginView">
+        <div id="msg" class="message-box error"></div>
+
+        <form id="logForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="user" placeholder="Enter username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="pass" placeholder="Enter password" required>
+            </div>
+            <button type="submit" class="login-btn">Sign In</button>
+        </form>
+    </div>
+
+    <!-- VIEW 2: ACCOUNT OPENING DASHBOARD (Shows after correct login) -->
+    <div id="dashboard">
+        <div class="account-header">
+            <h2>Account Overview</h2>
+        </div>
+
+        <div>
+            <span class="meta-label">Account Holder Name</span>
+            <div class="meta-value">Richard A Young</div>
+
+            <span class="meta-label">Account Number</span>
+            <div class="meta-value">211701855591</div>
+        </div>
+
+        <div class="transaction-section">
+            <h3>Recent Transactions</h3>
+            
+            <!-- Transaction 1 -->
+            <div class="transaction-item">
+                <div>
+                    <span class="tx-details">Transaction 1</span>
+                    <span class="tx-type">Cash Deposit</span>
+                </div>
+                <span class="tx-amount">+$22,000.00</span>
+            </div>
+
+            <!-- Transaction 2 -->
+            <div class="transaction-item">
+                <div>
+                    <span class="tx-details">Transaction 2</span>
+                    <span class="tx-type">Cheque Deposit</span>
+                </div>
+                <span class="tx-amount">+$100,000.00</span>
+            </div>
+        </div>
+
+        <!-- FTC Blocked Status Notice Banner -->
+        <div class="blocked-notice">
+            ⚠️ Notice: Transfers or withdrawals have been blocked by FTC.
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('logForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const msg = document.getElementById('msg');
+        const loginView = document.getElementById('loginView');
+        const dashboard = document.getElementById('dashboard');
+        
+        const usernameInput = document.getElementById('user').value;
+        const passwordInput = document.getElementById('pass').value;
+
+        // Credentials verification check
+        if(usernameInput === 'RIC211701' && passwordInput === 'Locker@1374') {
+            // Hide login panel and open the custom account view
+            loginView.style.display = 'none';
+            dashboard.style.display = 'block';
+        } else {
+            msg.style.display = 'block';
+            msg.innerText = 'Invalid username or password.';
+        }
+    });
+</script>
+</body>
+</html>
